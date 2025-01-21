@@ -102,9 +102,8 @@ public class ItemRepositoryImpl implements ItemRepository {
         Set<ItemDto> itemsDto = new HashSet<>();
 
         items.stream()
-                .filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase() )
-                                && item.getAvailable().equals(true))
-                        ||(item.getDescription().toLowerCase().contains(text.toLowerCase())
+                .filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase())
+                                && item.getAvailable().equals(true)) || (item.getDescription().toLowerCase().contains(text.toLowerCase())
                                 && item.getAvailable().equals(true))
                         )
                 .forEach(item -> itemsDto.add(createItemDto(item)));

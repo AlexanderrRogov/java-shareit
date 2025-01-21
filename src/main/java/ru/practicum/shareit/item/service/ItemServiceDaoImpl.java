@@ -20,13 +20,12 @@ public class ItemServiceDaoImpl implements ItemServiceDao {
         item.setId(generatorId);
         generatorId++;
         List<Item> listItems = new ArrayList<>();
-        if(items.containsKey(item.getOwner())) {
+        if (items.containsKey(item.getOwner())) {
             items.get(item.getOwner()).add(item);
         } else {
             listItems.add(item);
             items.put(item.getOwner(), listItems);
         }
-        //items.put(item.getOwner(), listItems);
         return item;
     }
 
@@ -35,7 +34,7 @@ public class ItemServiceDaoImpl implements ItemServiceDao {
         List<Item> userItems = items.get(item.getOwner());
         List<Item> toRemove = userItems.stream()
                 .filter(userItem -> userItem.getId().equals(item.getId()))
-                .collect(Collectors.toList());
+                .toList();
         userItems.removeAll(toRemove);
         userItems.add(item);
         return item;

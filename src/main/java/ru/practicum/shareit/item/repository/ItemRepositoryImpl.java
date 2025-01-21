@@ -16,7 +16,7 @@ import java.util.Set;
 public class ItemRepositoryImpl implements ItemRepository {
 
     private static Long itemId = 1L;
-    private Set<Item> items = new HashSet<>();
+    private final Set<Item> items = new HashSet<>();
 
     @Override
     public ItemDto getItemById(Long id) {
@@ -102,9 +102,11 @@ public class ItemRepositoryImpl implements ItemRepository {
         Set<ItemDto> itemsDto = new HashSet<>();
 
         items.stream()
-                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
-                        || item.getDescription().toLowerCase().contains(text.toLowerCase())
-                        && item.getAvailable().equals(true))
+                .filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase() )
+                                && item.getAvailable().equals(true))
+                        ||(item.getDescription().toLowerCase().contains(text.toLowerCase())
+                                && item.getAvailable().equals(true))
+                        )
                 .forEach(item -> itemsDto.add(createItemDto(item)));
 
         return itemsDto;

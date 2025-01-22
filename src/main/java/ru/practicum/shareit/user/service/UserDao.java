@@ -4,7 +4,7 @@ import ru.practicum.shareit.user.User;
 
 import java.util.List;
 
-public interface UserServiceDao {
+public interface UserDao {
 
     User add(User user);
 

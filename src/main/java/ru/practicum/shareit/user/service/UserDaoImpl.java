@@ -10,14 +10,13 @@ import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
-public class UserServiceDaoImpl implements UserServiceDao {
+public class UserDaoImpl implements UserDao {
     private final Map<Long, User> users = new HashMap<>();
     private final Set<String> emails = new HashSet<>();
     private Long generatorId = 1L;
 
     @Override
     public User add(User user) {
-        checkEmail(user);
         user.setId(generatorId);
         users.put(generatorId, user);
         emails.add(user.getEmail());
@@ -27,7 +26,6 @@ public class UserServiceDaoImpl implements UserServiceDao {
 
     @Override
     public User update(Long id, User user) {
-        checkUserInMemory(id);
         updateEmail(findById(id).getEmail(), user.getEmail());
         users.put(id, user);
         return users.get(id);
@@ -43,7 +41,6 @@ public class UserServiceDaoImpl implements UserServiceDao {
 
     @Override
     public void delete(Long id) {
-        checkUserInMemory(id);
         emails.remove(findById(id).getEmail());
         users.remove(id);
     }

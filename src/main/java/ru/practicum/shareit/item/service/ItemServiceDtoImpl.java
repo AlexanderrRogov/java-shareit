@@ -6,9 +6,7 @@ import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserDto;
-import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.service.UserServiceDaoImpl;
+import ru.practicum.shareit.user.service.UserDaoImpl;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,20 +17,18 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceDtoImpl implements ItemServiceDto {
-    private final ItemServiceDao itemDao;
-    private final UserServiceDaoImpl userService;
+    private final ItemDao itemDao;
+    private final UserDaoImpl userService;
 
     @Override
     public ItemDto add(Long userId, ItemDto itemDto) {
-        UserDto user = UserMapper.toUserDto(userService.findById(userId));
         Item item = ItemMapper.toItem(itemDto);
-        item.setOwner((UserMapper.toUser(user)).getId());
+        item.setOwner(userService.findById(userId).getId());
         return ItemMapper.toItemDto(itemDao.add(item));
     }
 
     @Override
     public ItemDto update(Long userId, Long itemId, ItemDto itemDto) {
-        UserDto user = UserMapper.toUserDto(userService.findById(userId));
         Optional<Item> itemOptional = itemDao.findItemById(itemId);
         if (itemOptional.isPresent()) {
             if (!itemOptional.get().getOwner().equals(userId)) {
@@ -50,7 +46,6 @@ public class ItemServiceDtoImpl implements ItemServiceDto {
             if (Objects.isNull(item.getName())) {
                 item.setName(itemFromStorage.getName());
             }
-            item.setId(itemFromStorage.getId());
             item.setRequest(itemFromStorage.getRequest());
             item.setOwner(itemFromStorage.getOwner());
 

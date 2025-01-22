@@ -16,20 +16,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceDtoImpl implements UserServiceDto {
 
-    private final UserServiceDao userServiceDao;
+    private final UserDao userDao;
 
     @Override
     public UserDto add(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
         checkEmail(user);
-        return UserMapper.toUserDto(userServiceDao.add(user));
+        return UserMapper.toUserDto(userDao.add(user));
     }
 
     @Override
     public UserDto update(Long id, UserDto userDto) {
-        if (!isUserInMemory(id)) {
-            throw new NotFoundException("Пользователя с " + id + " не существует");
-        }
         User user = new User();
         UserDto userFromMemory = findById(id);
 
@@ -45,22 +42,19 @@ public class UserServiceDtoImpl implements UserServiceDto {
             user.setEmail(userFromMemory.getEmail());
         }
         user.setId(id);
-        return UserMapper.toUserDto(userServiceDao.update(id, user));
+        return UserMapper.toUserDto(userDao.update(id, user));
     }
 
     @Override
     public UserDto findById(Long id) {
-        if (!isUserInMemory(id)) {
-            throw new NotFoundException("Пользователя с " + id + " не существует");
-        }
-        User user = userServiceDao.findById(id);
+        User user = userDao.findById(id);
         return UserMapper.toUserDto(user);
     }
 
     @Override
     public void delete(Long id) {
         if (isUserInMemory(id)) {
-            userServiceDao.delete(id);
+            userDao.delete(id);
         } else {
             throw new NotFoundException("Пользователя с " + id + " не существует");
         }
@@ -68,13 +62,13 @@ public class UserServiceDtoImpl implements UserServiceDto {
 
     @Override
     public List<UserDto> findAll() {
-        return userServiceDao.findAll().stream()
+        return userDao.findAll().stream()
                 .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
     }
 
     private void checkEmail(User user) {
-        boolean isEmailNotUnique = userServiceDao.findAll().stream()
+        boolean isEmailNotUnique = userDao.findAll().stream()
                 .anyMatch(thisUser -> thisUser.getEmail().equals(user.getEmail())
                         && !thisUser.getId().equals(user.getId()));
         if (isEmailNotUnique) {
@@ -83,7 +77,7 @@ public class UserServiceDtoImpl implements UserServiceDto {
     }
 
     private boolean isUserInMemory(Long userId) {
-        return userServiceDao.findAll().stream()
+        return userDao.findAll().stream()
                 .anyMatch(user -> user.getId().equals(userId));
     }
 }

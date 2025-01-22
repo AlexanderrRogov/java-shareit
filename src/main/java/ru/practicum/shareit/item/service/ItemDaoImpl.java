@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemServiceDaoImpl implements ItemServiceDao {
+public class ItemDaoImpl implements ItemDao {
 
     private final Map<Long, List<Item>> items = new HashMap<>();
     private Long generatorId = 1L;

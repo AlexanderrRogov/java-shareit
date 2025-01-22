@@ -46,6 +46,7 @@ public class ItemServiceDtoImpl implements ItemServiceDto {
             if (Objects.isNull(item.getName())) {
                 item.setName(itemFromStorage.getName());
             }
+            item.setId(itemFromStorage.getId());
             item.setRequest(itemFromStorage.getRequest());
             item.setOwner(itemFromStorage.getOwner());
 

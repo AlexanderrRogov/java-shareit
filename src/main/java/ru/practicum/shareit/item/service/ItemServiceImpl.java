@@ -85,7 +85,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDtoOut findItemById(Long userId, Long itemId) {
-        userService.findById(userId);
         Optional<Item> itemGet = itemRepository.findById(itemId);
         if (itemGet.isEmpty()) {
             throw new NotFoundException("У пользователя с id = " + userId + " не " +

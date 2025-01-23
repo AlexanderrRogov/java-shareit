@@ -35,9 +35,10 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDtoOut add(Long userId, BookingDto bookingDto) {
         User user = UserMapper.toUser(userService.findById(userId));
-        Optional<Item> itemById = itemRepository.findById(bookingDto.getItemId());
+        var itemId = bookingDto.getItemId();
+        Optional<Item> itemById = itemRepository.findById(itemId);
         if (itemById.isEmpty()) {
-            throw new NotFoundException("Вещь не найдена.");
+            throw new NotFoundException("Вещь с id " + itemId + " не найдена.");
         }
         Item item = itemById.get();
         bookingValidation(bookingDto, user, item);
@@ -86,7 +87,6 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED -> bookingRepository.findAllRejectedBookingsByBookerId(bookerId, LocalDateTime.now()).stream()
                     .map(BookingMapper::toBookingOut)
                     .collect(Collectors.toList());
-            default -> throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
         };
     }
 
@@ -113,7 +113,6 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED -> bookingRepository.findAllRejectedBookingsByOwnerId(ownerId).stream()
                     .map(BookingMapper::toBookingOut)
                     .collect(Collectors.toList());
-            default -> throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
         };
     }
 
@@ -123,7 +122,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("Вещь не доступена для бронирования.");
         }
         if (user.getId().equals(item.getOwner().getId())) {
-            throw new NotFoundException("Вещь не найдена.");
+            throw new NotFoundException("Вещь уже принадлежит пользователю с id " + user.getId());
         }
         if (bookingDto.getStart().isAfter(bookingDto.getEnd()) || bookingDto.getStart().isEqual(bookingDto.getEnd())) {
             throw new ValidationException("Дата окончания не может быть раньше или равна дате начала");
@@ -141,7 +140,7 @@ public class BookingServiceImpl implements BookingService {
     private Booking validateBookingDetails(Long userId, Long bookingId, Integer number) {
         Optional<Booking> bookingById = bookingRepository.findById(bookingId);
         if (bookingById.isEmpty()) {
-            throw new NotFoundException("Бронь не найдена.");
+            throw new NotFoundException("Бронь c id " + bookingId + " не найдена.");
         }
         Booking booking = bookingById.get();
         switch (number) {

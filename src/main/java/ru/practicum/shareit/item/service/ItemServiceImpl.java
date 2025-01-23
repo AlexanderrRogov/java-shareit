@@ -78,20 +78,24 @@ public class ItemServiceImpl implements ItemService {
         if (name != null && !name.isBlank()) {
             item.setName(name);
         }
+        itemRepository.update(itemId, item.getName(), item.getDescription(), item.getAvailable());
         return ItemMapper.toItemDtoOut(item);
     }
 
-
-    @Override
-    @Transactional
-    public ItemDtoOut findItemById(Long userId, Long itemId) {
+    private Item getItem(Long userId, Long itemId) {
         Optional<Item> itemGet = itemRepository.findById(itemId);
         if (itemGet.isEmpty()) {
             throw new NotFoundException("У пользователя с id = " + userId + " не " +
                     "существует вещи с id = " + itemId);
         }
-        Item item = itemGet.get();
-        ItemDtoOut itemDtoOut = ItemMapper.toItemDtoOut(itemGet.get());
+        return itemGet.get();
+    }
+
+    @Override
+    @Transactional
+    public ItemDtoOut findItemById(Long userId, Long itemId) {
+        Item item = getItem(userId, itemId);
+        ItemDtoOut itemDtoOut = ItemMapper.toItemDtoOut(item);
         itemDtoOut.setComments(getAllItemComments(itemId));
         if (!item.getOwner().getId().equals(userId)) {
             return itemDtoOut;
@@ -155,14 +159,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public CommentDtoOut createComment(Long userId, CommentDto commentDto, Long itemId) {
         User user = UserMapper.toUser(userService.findById(userId));
-        Optional<Item> itemById = itemRepository.findById(itemId);
-
-        if (itemById.isEmpty()) {
-
-            throw new NotFoundException("У пользователя с id = " + userId + " не " +
-                    "существует вещи с id = " + itemId);
-        }
-        Item item = itemById.get();
+        Item item = getItem(userId, itemId);
 
         List<Booking> userBookings = bookingRepository.findAllByUserBookings(userId, itemId, LocalDateTime.now());
 

@@ -23,5 +23,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             " i.description = ?3," +
             " i.available = ?4" +
             " where i.id = ?1")
-    void update(Long id, String itemName, String itemDescription, Boolean Available);
+    void update(Long id, String itemName, String itemDescription, Boolean available);
 }

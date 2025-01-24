@@ -173,7 +173,7 @@ public class BookingServiceImpl implements BookingService {
             case 2:
                 if (!booking.getBooker().getId().equals(userId)
                         && !booking.getItem().getOwner().getId().equals(userId)) {
-                    throw new NotFoundException("Пользователь не владелец и не автор бронирования ");
+                    throw new NotFoundException("Пользователь не владелец и не автор бронирования");
                 }
                 return booking;
         }

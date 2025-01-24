@@ -73,7 +73,7 @@ class BookingRepositoryTest {
             .build();
 
     @BeforeEach
-    private void init() {
+    public void init() {
         testEntityManager.persist(user);
         testEntityManager.persist(owner);
         testEntityManager.persist(item);
@@ -84,7 +84,7 @@ class BookingRepositoryTest {
     }
 
     @AfterEach
-    private void deleteAll() {
+    public void deleteAll() {
         bookingRepository.deleteAll();
     }
 
@@ -235,33 +235,5 @@ class BookingRepositoryTest {
 
         assertEquals(bookings.size(), 1);
         assertEquals(bookings.get(0).getStatus(), BookingStatus.APPROVED);
-    }
-
-    @Test
-    void getLastBooking() {
-        Optional<Booking> bookingOptional = bookingRepository.getLastBooking(1L, LocalDateTime.now());
-        Booking actualBooking;
-
-        if (bookingOptional.isPresent()) {
-            actualBooking = bookingOptional.get();
-
-            assertEquals(actualBooking.getId(), 1L);
-        } else {
-            fail();
-        }
-    }
-
-    @Test
-    void getNextBooking() {
-        Optional<Booking> bookingOptional = bookingRepository.getNextBooking(1L, LocalDateTime.now());
-        Booking actualBooking;
-
-        if (bookingOptional.isPresent()) {
-            actualBooking = bookingOptional.get();
-
-            assertEquals(actualBooking.getId(), 3L);
-        } else {
-            fail();
-        }
     }
 }

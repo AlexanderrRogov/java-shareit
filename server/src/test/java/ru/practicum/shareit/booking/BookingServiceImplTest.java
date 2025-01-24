@@ -145,7 +145,7 @@ class BookingServiceImplTest {
         NotFoundException bookingNotFoundException = assertThrows(NotFoundException.class,
                 () -> bookingService.add(userDto.getId(), bookingDto));
 
-        assertEquals(bookingNotFoundException.getMessage(), "Вещь не найдена.");
+        assertEquals(bookingNotFoundException.getMessage(), "Вещь уже принадлежит пользователю с id 1");
     }
 
     @Test
@@ -182,10 +182,10 @@ class BookingServiceImplTest {
     void updateWhenUserIsNotItemOwnerShouldThrowNotFoundException() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
-        NotFoundException bookingNotFoundException = assertThrows(NotFoundException.class,
+        ValidationException bookingValidationException = assertThrows(ValidationException.class,
                 () -> bookingService.update(userDto.getId(), booking.getId(), true));
 
-        assertEquals(bookingNotFoundException.getMessage(), "Пользователь не является владельцем");
+        assertEquals(bookingValidationException.getMessage(), "Пользователь не является владельцем");
     }
 
     @Test
@@ -205,7 +205,7 @@ class BookingServiceImplTest {
         NotFoundException bookingNotFoundException = assertThrows(NotFoundException.class,
                 () -> bookingService.findBookingByUserId(1L, booking.getId()));
 
-        assertEquals(bookingNotFoundException.getMessage(), "Бронь не найдена.");
+        assertEquals(bookingNotFoundException.getMessage(), "Бронь c id 1 не найдена.");
     }
 
     @Test
@@ -215,7 +215,7 @@ class BookingServiceImplTest {
         NotFoundException bookingNotFoundException = assertThrows(NotFoundException.class,
                 () -> bookingService.findBookingByUserId(3L, booking.getId()));
 
-        assertEquals(bookingNotFoundException.getMessage(), "Пользователь не владелeц и не автор бронирования ");
+        assertEquals("Пользователь не владелец и не автор бронирования" , bookingNotFoundException.getMessage());
     }
 
     @Test

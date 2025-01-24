@@ -168,7 +168,6 @@ class ItemServiceImplTest {
 
     @Test
     void getItemById() {
-        when(userService.findById(user.getId())).thenReturn(userDto);
         when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
 
         ItemDtoOut actualItemDto = itemService.findItemById(user.getId(), item.getId());

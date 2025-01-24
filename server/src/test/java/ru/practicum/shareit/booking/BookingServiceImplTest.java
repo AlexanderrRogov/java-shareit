@@ -215,7 +215,7 @@ class BookingServiceImplTest {
         NotFoundException bookingNotFoundException = assertThrows(NotFoundException.class,
                 () -> bookingService.findBookingByUserId(3L, booking.getId()));
 
-        assertEquals("Пользователь не владелец и не автор бронирования" , bookingNotFoundException.getMessage());
+        assertEquals("Пользователь не владелец и не автор бронирования", bookingNotFoundException.getMessage());
     }
 
     @Test

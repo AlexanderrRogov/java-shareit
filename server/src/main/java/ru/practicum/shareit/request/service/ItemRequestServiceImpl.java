@@ -31,8 +31,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     @Transactional
     public ItemRequestDtoOut add(Long userId, ItemRequestDto itemRequestDto) {
+        log.info("Добавление запроса от пользователя с id={}", userId);
         User user = UserMapper.toUser(userService.findById(userId));
-        ItemRequest request = ItemRequestMapper.toRequest(user, itemRequestDto);
+        ItemRequest request = ItemRequestMapper.toRequest(itemRequestDto);
         request.setRequester(user);
         return ItemRequestMapper.toRequestDtoOut(requestRepository.save(request));
     }
@@ -40,7 +41,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     @Transactional(readOnly = true)
     public List<ItemRequestDtoOut> getUserRequests(Long userId) {
-        UserMapper.toUser(userService.findById(userId));
+        log.info("Получение запроса пользователя с id={}", userId);
+        userService.findById(userId);
         List<ItemRequest> itemRequestList = requestRepository.findAllByRequesterId(userId);
         return itemRequestList.stream()
                 .map(ItemRequestMapper::toRequestDtoOut)
@@ -49,6 +51,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDtoOut> getAllRequests(Long userId, Integer from, Integer size) {
+        log.info("Получение всех запросов пользователей");
         UserMapper.toUser(userService.findById(userId));
         List<ItemRequest> itemRequestList = requestRepository.findAllByRequester_IdNotOrderByCreatedDesc(userId, PageRequest.of(from / size, size));
         return itemRequestList.stream()
@@ -58,6 +61,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDtoOut getRequestById(Long userId, Long requestId) {
+        log.info("Получение запроса c id={} пользователя с id={}", requestId, userId);
         userService.findById(userId);
         Optional<ItemRequest> requestById = requestRepository.findById(requestId);
         if (requestById.isEmpty()) {

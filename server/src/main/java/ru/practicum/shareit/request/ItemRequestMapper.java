@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class ItemRequestMapper {
 
-    public ItemRequest toRequest(User user, ItemRequestDto itemRequestDto) {
+    public ItemRequest toRequest(ItemRequestDto itemRequestDto) {
         return ItemRequest.builder()
                 .description(itemRequestDto.getDescription())
                 .build();
@@ -29,7 +29,7 @@ public class ItemRequestMapper {
 
     public ItemRequestDtoOut toRequestDtoOut(ItemRequest request) {
         List<ItemDtoOut> itemsDtoOut = new ArrayList<>();
-        if (!Objects.isNull(request.getItems())) {
+        if (Objects.nonNull(request.getItems())) {
             itemsDtoOut = request.getItems().stream()
                     .map(ItemMapper::toItemDtoOut)
                     .collect(Collectors.toList());

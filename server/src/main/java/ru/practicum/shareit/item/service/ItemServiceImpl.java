@@ -58,7 +58,8 @@ public class ItemServiceImpl implements ItemService {
         item.setOwner((UserMapper.toUser(user)));
 
         if (itemDto.getRequestId() != null) {
-            item.setRequest(itemRequestRepository.getReferenceById(itemDto.getRequestId()));
+            var itemRequest = itemRequestRepository.findById(itemDto.getRequestId()).orElseThrow();
+            item.setRequest(itemRequest);
         }
 
         return ItemMapper.toItemDtoOut(itemRepository.save(item));
